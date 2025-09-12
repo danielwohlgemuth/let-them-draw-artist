@@ -17,11 +17,6 @@ from lambda_function import lambda_handler
 class TestIntegration:
     """Full integration tests for the lambda function."""
 
-    # @mock_dynamodb
-    # @mock_s3
-    # @mock_cognitoidentityprovider
-    # @mock_ses
-    # @mock_ssm
     @patch.dict(os.environ, {
         'TABLE_NAME': 'test-table',
         'BUCKET_NAME': 'test-bucket',
@@ -83,11 +78,6 @@ class TestIntegration:
         assert len(s3_objects['Contents']) == 1
         assert s3_objects['Contents'][0]['Key'] == f'artwork/{user_id}/{request_id}.png'
 
-    # @mock_dynamodb
-    # @mock_s3
-    # @mock_cognitoidentityprovider
-    # @mock_ses
-    # @mock_ssm
     @patch.dict(os.environ, {
         'TABLE_NAME': 'test-table',
         'BUCKET_NAME': 'test-bucket',
@@ -142,11 +132,6 @@ class TestIntegration:
         assert item['status'] == 'done'
         assert 'artwork_url' in item
 
-    # @mock_dynamodb
-    # @mock_s3
-    # @mock_cognitoidentityprovider
-    # @mock_ses
-    # @mock_ssm
     @patch.dict(os.environ, {
         'TABLE_NAME': 'test-table',
         'BUCKET_NAME': 'test-bucket',
@@ -180,11 +165,6 @@ class TestIntegration:
         # Verify failure
         assert result == {'batchItemFailures': [{'itemIdentifier': 'msg-123'}]}
 
-    # @mock_dynamodb
-    # @mock_s3
-    # @mock_cognitoidentityprovider
-    # @mock_ses
-    # @mock_ssm
     @patch.dict(os.environ, {
         'TABLE_NAME': 'test-table',
         'BUCKET_NAME': 'test-bucket',
