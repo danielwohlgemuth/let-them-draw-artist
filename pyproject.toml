@@ -1,0 +1,26 @@
+[project]
+name = "let-them-draw-artist"
+version = "0.1.0"
+description = "Artist code for the Let Them Draw app"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pillow==11.3.0",
+    "boto3==1.40.25",
+    "botocore==1.40.25",
+]
+
+[dependency-groups]
+dev = [
+    "moto==5.1.12",
+    "pytest==8.4.2",
+    "pytest-env==1.1.5",
+    "pytest-mock==3.15.0",
+    "coverage>=7.10.6",
+]
+
+[tool.pytest_env]
+TABLE_NAME = "test-table"
+BUCKET_NAME = "test-bucket"
+USER_POOL_ID = "test-user-pool"
+SES_CONFIGURATION_SET = "test-configuration-set"
