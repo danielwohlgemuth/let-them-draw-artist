@@ -17,10 +17,15 @@ TABLE_NAME = os.environ['TABLE_NAME']
 BUCKET_NAME = os.environ['BUCKET_NAME']
 USER_POOL_ID = os.environ['USER_POOL_ID']
 SES_CONFIGURATION_SET = os.environ['SES_CONFIGURATION_SET']
-SES_FROM_EMAIL = os.environ['SES_FROM_EMAIL']
-FROM_EMAIL = ssm.get_parameter(Name='/let-them-draw/from-email')['Parameter']['Value']
+
+ses_from_email = ''
 
 table = dynamodb.Table(TABLE_NAME)
+
+def get_from_email():
+    if not ses_from_email:
+        ses_from_email = ssm.get_parameter(Name='/let-them-draw/from-email')['Parameter']['Value']
+    return ses_from_email
 
 def draw_image(shape, color):
     img = Image.new('RGB', (400, 400), 'white')
@@ -111,7 +116,7 @@ def send_artwork_notification(user_id, artwork_url):
         user_email = get_user_email(user_id)
 
         ses.send_templated_email(
-            Source=SES_FROM_EMAIL,
+            Source=get_from_email(),
             Destination={'ToAddresses': [user_email]},
             Template='ArtworkNotification',
             TemplateData=json.dumps({
