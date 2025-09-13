@@ -88,27 +88,26 @@ class TestProcessMessage:
         mock_update.assert_called_once_with('user-123', 'request-456', 'in progress')
         mock_send.assert_not_called()
 
-    # @patch('lambda_function.send_artwork_notification')
-    # @patch('lambda_function.generate_and_upload_artwork')
-    # @patch('lambda_function.update_request_status')
-    # @patch('lambda_function.parse_request_data')
-    # def test_process_message_send_notification_failure(self, mock_parse, mock_update, mock_generate, mock_send):
-    #     """Test when send_artwork_notification fails (should not raise exception)."""
-    #     mock_parse.return_value = ('user-123', 'request-456', 'circle', 'red')
-    #     mock_generate.return_value = 'https://example.com/artwork.png'
-    #     mock_send.side_effect = Exception("Email send failed")
+    @patch('lambda_function.send_artwork_notification')
+    @patch('lambda_function.generate_and_upload_artwork')
+    @patch('lambda_function.update_request_status')
+    @patch('lambda_function.parse_request_data')
+    def test_process_message_send_notification_failure(self, mock_parse, mock_update, mock_generate, mock_send):
+        """Test when send_artwork_notification fails (should not raise exception)."""
+        mock_parse.return_value = ('user-123', 'request-456', 'circle', 'red')
+        mock_generate.return_value = 'https://example.com/artwork.png'
 
-    #     event = {'body': '{"userId": "user-123", "requestId": "request-456"}'}
+        event = {'body': '{"userId": "user-123", "requestId": "request-456"}'}
 
-    #     # Should not raise exception even if notification fails
-    #     process_message(event)
+        # Should not raise exception even if notification fails
+        process_message(event)
 
-    #     # Verify all functions were called
-    #     mock_parse.assert_called_once_with(event)
-    #     mock_update.assert_any_call('user-123', 'request-456', 'in progress')
-    #     mock_generate.assert_called_once_with('user-123', 'request-456', 'circle', 'red')
-    #     mock_update.assert_any_call('user-123', 'request-456', 'done', 'https://example.com/artwork.png')
-    #     mock_send.assert_called_once_with('user-123', 'https://example.com/artwork.png')
+        # Verify all functions were called
+        mock_parse.assert_called_once_with(event)
+        mock_update.assert_any_call('user-123', 'request-456', 'in progress')
+        mock_generate.assert_called_once_with('user-123', 'request-456', 'circle', 'red')
+        mock_update.assert_any_call('user-123', 'request-456', 'done', 'https://example.com/artwork.png')
+        mock_send.assert_called_once_with('user-123', 'https://example.com/artwork.png')
 
     @patch('lambda_function.send_artwork_notification')
     @patch('lambda_function.generate_and_upload_artwork')
