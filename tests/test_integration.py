@@ -21,7 +21,7 @@ class TestIntegration:
     #     'TABLE_NAME': 'test-table',
     #     'BUCKET_NAME': 'test-bucket',
     #     'USER_POOL_ID': 'test-user-pool',
-    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_CONFIGURATION_SET': 'test-configuration-set',
     #     'SES_FROM_EMAIL': 'test@example.com'
     # })
     # def test_full_workflow_success(self):
@@ -82,7 +82,7 @@ class TestIntegration:
     #     'TABLE_NAME': 'test-table',
     #     'BUCKET_NAME': 'test-bucket',
     #     'USER_POOL_ID': 'test-user-pool',
-    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_CONFIGURATION_SET': 'test-configuration-set',
     #     'SES_FROM_EMAIL': 'test@example.com'
     # })
     # def test_full_workflow_square_artwork(self):
@@ -136,7 +136,7 @@ class TestIntegration:
     #     'TABLE_NAME': 'test-table',
     #     'BUCKET_NAME': 'test-bucket',
     #     'USER_POOL_ID': 'test-user-pool',
-    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_CONFIGURATION_SET': 'test-configuration-set',
     #     'SES_FROM_EMAIL': 'test@example.com'
     # })
     # def test_workflow_with_missing_dynamodb_item(self):
@@ -169,7 +169,7 @@ class TestIntegration:
     #     'TABLE_NAME': 'test-table',
     #     'BUCKET_NAME': 'test-bucket',
     #     'USER_POOL_ID': 'test-user-pool',
-    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_CONFIGURATION_SET': 'test-configuration-set',
     #     'SES_FROM_EMAIL': 'test@example.com'
     # })
     # def test_workflow_with_invalid_json(self):

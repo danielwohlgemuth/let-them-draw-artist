@@ -23,6 +23,7 @@ ses_from_email = ''
 table = dynamodb.Table(TABLE_NAME)
 
 def get_from_email():
+    global ses_from_email
     if not ses_from_email:
         ses_from_email = ssm.get_parameter(Name='/let-them-draw/from-email')['Parameter']['Value']
     return ses_from_email

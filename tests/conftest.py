@@ -15,7 +15,7 @@ def mock_env_vars():
         'TABLE_NAME': 'test-table',
         'BUCKET_NAME': 'test-bucket',
         'USER_POOL_ID': 'test-user-pool',
-        'SES_CONFIGURATION_SET': 'test-config-set',
+        'SES_CONFIGURATION_SET': 'test-configuration-set',
         'SES_FROM_EMAIL': 'test@example.com'
     }
 
