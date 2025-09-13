@@ -59,20 +59,14 @@ def parse_request_data(event):
 
     return user_id, request_id, shape, color
 
-def update_request_status(user_id, request_id, status, artwork_url=None):
+def update_request_status(user_id, request_id, status):
     """Update the request status in DynamoDB."""
-    update_expression = 'SET #status = :status'
-    expression_values = {':status': status}
-
-    if artwork_url:
-        update_expression += ', artwork_url = :artwork_url'
-        expression_values[':artwork_url'] = artwork_url
 
     table.update_item(
         Key={'requestId': request_id, 'userId': user_id},
-        UpdateExpression=update_expression,
+        UpdateExpression='SET #status = :status',
         ExpressionAttributeNames={'#status': 'status'},
-        ExpressionAttributeValues=expression_values
+        ExpressionAttributeValues={':status': status}
     )
 
 def generate_and_upload_artwork(user_id, request_id, shape, color):
@@ -135,7 +129,7 @@ def process_message(event):
 
     artwork_url = generate_and_upload_artwork(user_id, request_id, shape, color)
 
-    update_request_status(user_id, request_id, 'done', artwork_url)
+    update_request_status(user_id, request_id, 'done')
 
     send_artwork_notification(user_id, artwork_url)
 

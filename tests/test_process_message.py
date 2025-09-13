@@ -32,7 +32,7 @@ class TestProcessMessage:
         mock_parse.assert_called_once_with(event)
         mock_update.assert_any_call('user-123', 'request-456', 'in progress')
         mock_generate.assert_called_once_with('user-123', 'request-456', 'circle', 'red')
-        mock_update.assert_any_call('user-123', 'request-456', 'done', 'https://example.com/artwork.png')
+        mock_update.assert_any_call('user-123', 'request-456', 'done')
         mock_send.assert_called_once_with('user-123', 'https://example.com/artwork.png')
 
     @patch('lambda_function.send_artwork_notification')
@@ -106,7 +106,7 @@ class TestProcessMessage:
         mock_parse.assert_called_once_with(event)
         mock_update.assert_any_call('user-123', 'request-456', 'in progress')
         mock_generate.assert_called_once_with('user-123', 'request-456', 'circle', 'red')
-        mock_update.assert_any_call('user-123', 'request-456', 'done', 'https://example.com/artwork.png')
+        mock_update.assert_any_call('user-123', 'request-456', 'done')
         mock_send.assert_called_once_with('user-123', 'https://example.com/artwork.png')
 
     @patch('lambda_function.send_artwork_notification')

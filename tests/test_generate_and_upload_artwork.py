@@ -118,24 +118,3 @@ class TestGenerateAndUploadArtwork:
 
         # Verify CloudFront URL generation
         assert result == 'https://d1234567890.cloudfront.net/artwork/request-456'
-
-    @patch('lambda_function.s3')
-    @patch('lambda_function.draw_image')
-    def test_presigned_url_expiration(self, mock_draw_image, mock_s3):
-        """Test that presigned URL has correct expiration time."""
-        # Mock the image
-        mock_image = Mock()
-        mock_draw_image.return_value = mock_image
-
-        # Mock S3 operations
-        mock_s3.put_object.return_value = {}
-
-        # Mock image save
-        mock_image.save = Mock()
-
-        result = generate_and_upload_artwork('user-123', 'request-456', 'square', 'red')
-
-        # Verify CloudFront URL format matches expected pattern
-        expected_url = 'https://d1234567890.cloudfront.net/artwork/request-456'
-        assert result == expected_url
-        assert result.startswith('https://d1234567890.cloudfront.net/artwork/')
