@@ -85,7 +85,7 @@ def generate_and_upload_artwork(user_id, request_id, shape, color):
         ContentType='image/png'
     )
 
-    artwork_url = f'{CLOUDFRONT_DOMAIN}/artwork/{request_id}'
+    artwork_url = f'https://{CLOUDFRONT_DOMAIN}/artwork/{request_id}'
 
     return artwork_url
 

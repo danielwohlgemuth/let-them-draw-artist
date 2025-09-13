@@ -46,7 +46,7 @@ class TestSendArtworkNotification:
         mock_get_user_email.return_value = 'test@example.com'
         mock_ses.send_templated_email.return_value = {'MessageId': 'msg-456'}
 
-        artwork_url = 'https://s3.amazonaws.com/bucket/artwork/user-456/request-789.png'
+        artwork_url = 'https://d1234567890.cloudfront.net/artwork/request-456'
         send_artwork_notification('user-456', artwork_url)
 
         # Verify template data contains correct artwork URL
