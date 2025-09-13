@@ -17,6 +17,7 @@ TABLE_NAME = os.environ['TABLE_NAME']
 BUCKET_NAME = os.environ['BUCKET_NAME']
 USER_POOL_ID = os.environ['USER_POOL_ID']
 SES_CONFIGURATION_SET = os.environ['SES_CONFIGURATION_SET']
+CLOUDFRONT_DOMAIN = os.environ['CLOUDFRONT_DOMAIN']
 
 ses_from_email = ''
 
@@ -75,7 +76,7 @@ def update_request_status(user_id, request_id, status, artwork_url=None):
     )
 
 def generate_and_upload_artwork(user_id, request_id, shape, color):
-    """Generate artwork image and upload to S3, returning the presigned URL."""
+    """Generate artwork image and upload to S3, returning the CloudFront URL."""
     image = draw_image(shape, color)
 
     img_buffer = io.BytesIO()
@@ -90,11 +91,7 @@ def generate_and_upload_artwork(user_id, request_id, shape, color):
         ContentType='image/png'
     )
 
-    artwork_url = s3.generate_presigned_url(
-        'get_object',
-        Params={'Bucket': BUCKET_NAME, 'Key': s3_key},
-        ExpiresIn=3600
-    )
+    artwork_url = f'{CLOUDFRONT_DOMAIN}/artwork/{request_id}'
 
     return artwork_url
 

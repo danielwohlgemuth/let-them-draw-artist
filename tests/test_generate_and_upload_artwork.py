@@ -42,15 +42,8 @@ class TestGenerateAndUploadArtwork:
         assert put_call_args[1]['Key'] == 'artwork/user-123/request-456.png'
         assert put_call_args[1]['ContentType'] == 'image/png'
 
-        # Verify presigned URL generation
-        mock_s3.generate_presigned_url.assert_called_once_with(
-            'get_object',
-            Params={'Bucket': 'test-bucket', 'Key': 'artwork/user-123/request-456.png'},
-            ExpiresIn=3600
-        )
-
-        # Verify return value
-        assert result == 'https://example.com/artwork.png'
+        # Verify CloudFront URL generation
+        assert result == 'https://d1234567890.cloudfront.net/artwork/request-456'
 
     @patch('lambda_function.s3')
     @patch('lambda_function.draw_image')
@@ -62,7 +55,6 @@ class TestGenerateAndUploadArtwork:
 
         # Mock S3 operations
         mock_s3.put_object.return_value = {}
-        mock_s3.generate_presigned_url.return_value = 'https://example.com/circle-artwork.png'
 
         # Mock image save
         mock_image.save = Mock()
@@ -76,8 +68,8 @@ class TestGenerateAndUploadArtwork:
         put_call_args = mock_s3.put_object.call_args
         assert put_call_args[1]['Key'] == 'artwork/user-789/request-101.png'
 
-        # Verify return value
-        assert result == 'https://example.com/circle-artwork.png'
+        # Verify CloudFront URL generation
+        assert result == 'https://d1234567890.cloudfront.net/artwork/request-101'
 
     @patch('lambda_function.s3')
     @patch('lambda_function.draw_image')
@@ -89,17 +81,19 @@ class TestGenerateAndUploadArtwork:
 
         # Mock S3 operations
         mock_s3.put_object.return_value = {}
-        mock_s3.generate_presigned_url.return_value = 'https://example.com/test.png'
 
         # Mock image save
         mock_image.save = Mock()
 
-        generate_and_upload_artwork('test-user', 'test-request', 'square', 'green')
+        result = generate_and_upload_artwork('test-user', 'test-request', 'square', 'green')
 
         # Verify S3 key format
         put_call_args = mock_s3.put_object.call_args
         expected_key = 'artwork/test-user/test-request.png'
         assert put_call_args[1]['Key'] == expected_key
+
+        # Verify CloudFront URL format
+        assert result == 'https://d1234567890.cloudfront.net/artwork/test-request'
 
     @patch('lambda_function.s3')
     @patch('lambda_function.draw_image')
@@ -111,17 +105,19 @@ class TestGenerateAndUploadArtwork:
 
         # Mock S3 operations
         mock_s3.put_object.return_value = {}
-        mock_s3.generate_presigned_url.return_value = 'https://example.com/test.png'
 
         # Mock image save
         mock_image.save = Mock()
 
-        generate_and_upload_artwork('user-123', 'request-456', 'square', 'red')
+        result = generate_and_upload_artwork('user-123', 'request-456', 'square', 'red')
 
         # Verify image save was called with PNG format
         mock_image.save.assert_called_once()
         save_call_args = mock_image.save.call_args
         assert save_call_args[1]['format'] == 'PNG'
+
+        # Verify CloudFront URL generation
+        assert result == 'https://d1234567890.cloudfront.net/artwork/request-456'
 
     @patch('lambda_function.s3')
     @patch('lambda_function.draw_image')
@@ -133,13 +129,13 @@ class TestGenerateAndUploadArtwork:
 
         # Mock S3 operations
         mock_s3.put_object.return_value = {}
-        mock_s3.generate_presigned_url.return_value = 'https://example.com/test.png'
 
         # Mock image save
         mock_image.save = Mock()
 
-        generate_and_upload_artwork('user-123', 'request-456', 'square', 'red')
+        result = generate_and_upload_artwork('user-123', 'request-456', 'square', 'red')
 
-        # Verify presigned URL expiration
-        presigned_call_args = mock_s3.generate_presigned_url.call_args
-        assert presigned_call_args[1]['ExpiresIn'] == 3600
+        # Verify CloudFront URL format matches expected pattern
+        expected_url = 'https://d1234567890.cloudfront.net/artwork/request-456'
+        assert result == expected_url
+        assert result.startswith('https://d1234567890.cloudfront.net/artwork/')

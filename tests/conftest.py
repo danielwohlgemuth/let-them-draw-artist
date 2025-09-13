@@ -16,7 +16,8 @@ def mock_env_vars():
         'BUCKET_NAME': 'test-bucket',
         'USER_POOL_ID': 'test-user-pool',
         'SES_CONFIGURATION_SET': 'test-configuration-set',
-        'SES_FROM_EMAIL': 'test@example.com'
+        'SES_FROM_EMAIL': 'test@example.com',
+        'CLOUDFRONT_DOMAIN': 'https://d1234567890.cloudfront.net'
     }
 
     with patch.dict(os.environ, env_vars):
