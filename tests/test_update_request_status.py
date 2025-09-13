@@ -71,5 +71,5 @@ class TestUpdateRequestStatus:
             update_request_status('user-123', 'request-456', 'done', '')
 
             call_args = mock_table.update_item.call_args
-            assert call_args[1]['UpdateExpression'] == 'SET #status = :status, artwork_url = :artwork_url'
-            assert call_args[1]['ExpressionAttributeValues'][':artwork_url'] == ''
+            assert call_args[1]['UpdateExpression'] == 'SET #status = :status'
+            assert ':artwork_url' not in call_args[1]['ExpressionAttributeValues']

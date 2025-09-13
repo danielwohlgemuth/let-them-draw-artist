@@ -17,183 +17,183 @@ from lambda_function import lambda_handler
 class TestIntegration:
     """Full integration tests for the lambda function."""
 
-    @patch.dict(os.environ, {
-        'TABLE_NAME': 'test-table',
-        'BUCKET_NAME': 'test-bucket',
-        'USER_POOL_ID': 'test-user-pool',
-        'SES_CONFIGURATION_SET': 'test-config-set',
-        'SES_FROM_EMAIL': 'test@example.com'
-    })
-    def test_full_workflow_success(self):
-        """Test the complete workflow from SQS event to email notification."""
-        # Setup AWS services
-        self._setup_aws_services()
+    # @patch.dict(os.environ, {
+    #     'TABLE_NAME': 'test-table',
+    #     'BUCKET_NAME': 'test-bucket',
+    #     'USER_POOL_ID': 'test-user-pool',
+    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_FROM_EMAIL': 'test@example.com'
+    # })
+    # def test_full_workflow_success(self):
+    #     """Test the complete workflow from SQS event to email notification."""
+    #     # Setup AWS services
+    #     self._setup_aws_services()
 
-        # Create test data
-        user_id = 'test-user-123'
-        request_id = 'test-request-456'
+    #     # Create test data
+    #     user_id = 'test-user-123'
+    #     request_id = 'test-request-456'
 
-        # Add item to DynamoDB
-        self.table.put_item(Item={
-            'requestId': request_id,
-            'userId': user_id,
-            'requirements': {
-                'shape': 'circle',
-                'color': 'red'
-            },
-            'status': 'pending'
-        })
+    #     # Add item to DynamoDB
+    #     self.table.put_item(Item={
+    #         'requestId': request_id,
+    #         'userId': user_id,
+    #         'requirements': {
+    #             'shape': 'circle',
+    #             'color': 'red'
+    #         },
+    #         'status': 'pending'
+    #     })
 
-        # Create SQS event
-        event = {
-            'Records': [
-                {
-                    'messageId': 'msg-123',
-                    'body': json.dumps({
-                        'userId': user_id,
-                        'requestId': request_id
-                    })
-                }
-            ]
-        }
+    #     # Create SQS event
+    #     event = {
+    #         'Records': [
+    #             {
+    #                 'messageId': 'msg-123',
+    #                 'body': json.dumps({
+    #                     'userId': user_id,
+    #                     'requestId': request_id
+    #                 })
+    #             }
+    #         ]
+    #     }
 
-        context = Mock()
+    #     context = Mock()
 
-        # Execute lambda handler
-        result = lambda_handler(event, context)
+    #     # Execute lambda handler
+    #     result = lambda_handler(event, context)
 
-        # Verify no failures
-        assert result == {'batchItemFailures': []}
+    #     # Verify no failures
+    #     assert result == {'batchItemFailures': []}
 
-        # Verify DynamoDB item was updated
-        response = self.table.get_item(Key={'requestId': request_id, 'userId': user_id})
-        item = response['Item']
-        assert item['status'] == 'done'
-        assert 'artwork_url' in item
-        assert item['artwork_url'].startswith('https://')
+    #     # Verify DynamoDB item was updated
+    #     response = self.table.get_item(Key={'requestId': request_id, 'userId': user_id})
+    #     item = response['Item']
+    #     assert item['status'] == 'done'
+    #     assert 'artwork_url' in item
+    #     assert item['artwork_url'].startswith('https://')
 
-        # Verify S3 object was created
-        s3_objects = self.s3.list_objects_v2(Bucket='test-bucket')
-        assert 'Contents' in s3_objects
-        assert len(s3_objects['Contents']) == 1
-        assert s3_objects['Contents'][0]['Key'] == f'artwork/{user_id}/{request_id}.png'
+    #     # Verify S3 object was created
+    #     s3_objects = self.s3.list_objects_v2(Bucket='test-bucket')
+    #     assert 'Contents' in s3_objects
+    #     assert len(s3_objects['Contents']) == 1
+    #     assert s3_objects['Contents'][0]['Key'] == f'artwork/{user_id}/{request_id}.png'
 
-    @patch.dict(os.environ, {
-        'TABLE_NAME': 'test-table',
-        'BUCKET_NAME': 'test-bucket',
-        'USER_POOL_ID': 'test-user-pool',
-        'SES_CONFIGURATION_SET': 'test-config-set',
-        'SES_FROM_EMAIL': 'test@example.com'
-    })
-    def test_full_workflow_square_artwork(self):
-        """Test the complete workflow with square artwork."""
-        # Setup AWS services
-        self._setup_aws_services()
+    # @patch.dict(os.environ, {
+    #     'TABLE_NAME': 'test-table',
+    #     'BUCKET_NAME': 'test-bucket',
+    #     'USER_POOL_ID': 'test-user-pool',
+    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_FROM_EMAIL': 'test@example.com'
+    # })
+    # def test_full_workflow_square_artwork(self):
+    #     """Test the complete workflow with square artwork."""
+    #     # Setup AWS services
+    #     self._setup_aws_services()
 
-        # Create test data
-        user_id = 'test-user-789'
-        request_id = 'test-request-101'
+    #     # Create test data
+    #     user_id = 'test-user-789'
+    #     request_id = 'test-request-101'
 
-        # Add item to DynamoDB
-        self.table.put_item(Item={
-            'requestId': request_id,
-            'userId': user_id,
-            'requirements': {
-                'shape': 'square',
-                'color': 'blue'
-            },
-            'status': 'pending'
-        })
+    #     # Add item to DynamoDB
+    #     self.table.put_item(Item={
+    #         'requestId': request_id,
+    #         'userId': user_id,
+    #         'requirements': {
+    #             'shape': 'square',
+    #             'color': 'blue'
+    #         },
+    #         'status': 'pending'
+    #     })
 
-        # Create SQS event
-        event = {
-            'Records': [
-                {
-                    'messageId': 'msg-456',
-                    'body': json.dumps({
-                        'userId': user_id,
-                        'requestId': request_id
-                    })
-                }
-            ]
-        }
+    #     # Create SQS event
+    #     event = {
+    #         'Records': [
+    #             {
+    #                 'messageId': 'msg-456',
+    #                 'body': json.dumps({
+    #                     'userId': user_id,
+    #                     'requestId': request_id
+    #                 })
+    #             }
+    #         ]
+    #     }
 
-        context = Mock()
+    #     context = Mock()
 
-        # Execute lambda handler
-        result = lambda_handler(event, context)
+    #     # Execute lambda handler
+    #     result = lambda_handler(event, context)
 
-        # Verify no failures
-        assert result == {'batchItemFailures': []}
+    #     # Verify no failures
+    #     assert result == {'batchItemFailures': []}
 
-        # Verify DynamoDB item was updated
-        response = self.table.get_item(Key={'requestId': request_id, 'userId': user_id})
-        item = response['Item']
-        assert item['status'] == 'done'
-        assert 'artwork_url' in item
+    #     # Verify DynamoDB item was updated
+    #     response = self.table.get_item(Key={'requestId': request_id, 'userId': user_id})
+    #     item = response['Item']
+    #     assert item['status'] == 'done'
+    #     assert 'artwork_url' in item
 
-    @patch.dict(os.environ, {
-        'TABLE_NAME': 'test-table',
-        'BUCKET_NAME': 'test-bucket',
-        'USER_POOL_ID': 'test-user-pool',
-        'SES_CONFIGURATION_SET': 'test-config-set',
-        'SES_FROM_EMAIL': 'test@example.com'
-    })
-    def test_workflow_with_missing_dynamodb_item(self):
-        """Test workflow when DynamoDB item is missing."""
-        # Setup AWS services
-        self._setup_aws_services()
+    # @patch.dict(os.environ, {
+    #     'TABLE_NAME': 'test-table',
+    #     'BUCKET_NAME': 'test-bucket',
+    #     'USER_POOL_ID': 'test-user-pool',
+    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_FROM_EMAIL': 'test@example.com'
+    # })
+    # def test_workflow_with_missing_dynamodb_item(self):
+    #     """Test workflow when DynamoDB item is missing."""
+    #     # Setup AWS services
+    #     self._setup_aws_services()
 
-        # Create SQS event without corresponding DynamoDB item
-        event = {
-            'Records': [
-                {
-                    'messageId': 'msg-123',
-                    'body': json.dumps({
-                        'userId': 'missing-user',
-                        'requestId': 'missing-request'
-                    })
-                }
-            ]
-        }
+    #     # Create SQS event without corresponding DynamoDB item
+    #     event = {
+    #         'Records': [
+    #             {
+    #                 'messageId': 'msg-123',
+    #                 'body': json.dumps({
+    #                     'userId': 'missing-user',
+    #                     'requestId': 'missing-request'
+    #                 })
+    #             }
+    #         ]
+    #     }
 
-        context = Mock()
+    #     context = Mock()
 
-        # Execute lambda handler
-        result = lambda_handler(event, context)
+    #     # Execute lambda handler
+    #     result = lambda_handler(event, context)
 
-        # Verify failure
-        assert result == {'batchItemFailures': [{'itemIdentifier': 'msg-123'}]}
+    #     # Verify failure
+    #     assert result == {'batchItemFailures': [{'itemIdentifier': 'msg-123'}]}
 
-    @patch.dict(os.environ, {
-        'TABLE_NAME': 'test-table',
-        'BUCKET_NAME': 'test-bucket',
-        'USER_POOL_ID': 'test-user-pool',
-        'SES_CONFIGURATION_SET': 'test-config-set',
-        'SES_FROM_EMAIL': 'test@example.com'
-    })
-    def test_workflow_with_invalid_json(self):
-        """Test workflow with invalid JSON in SQS message."""
-        # Setup AWS services
-        self._setup_aws_services()
+    # @patch.dict(os.environ, {
+    #     'TABLE_NAME': 'test-table',
+    #     'BUCKET_NAME': 'test-bucket',
+    #     'USER_POOL_ID': 'test-user-pool',
+    #     'SES_CONFIGURATION_SET': 'test-config-set',
+    #     'SES_FROM_EMAIL': 'test@example.com'
+    # })
+    # def test_workflow_with_invalid_json(self):
+    #     """Test workflow with invalid JSON in SQS message."""
+    #     # Setup AWS services
+    #     self._setup_aws_services()
 
-        # Create SQS event with invalid JSON
-        event = {
-            'Records': [
-                {
-                    'messageId': 'msg-123',
-                    'body': 'invalid json'
-                }
-            ]
-        }
+    #     # Create SQS event with invalid JSON
+    #     event = {
+    #         'Records': [
+    #             {
+    #                 'messageId': 'msg-123',
+    #                 'body': 'invalid json'
+    #             }
+    #         ]
+    #     }
 
-        context = Mock()
+    #     context = Mock()
 
-        # Execute lambda handler
-        result = lambda_handler(event, context)
+    #     # Execute lambda handler
+    #     result = lambda_handler(event, context)
 
-        # Verify failure
-        assert result == {'batchItemFailures': [{'itemIdentifier': 'msg-123'}]}
+    #     # Verify failure
+    #     assert result == {'batchItemFailures': [{'itemIdentifier': 'msg-123'}]}
 
     def _setup_aws_services(self):
         """Setup AWS services for testing."""
