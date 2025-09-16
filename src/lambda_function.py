@@ -4,7 +4,7 @@ import json
 import os
 import traceback
 
-from PIL import Image, ImageColor, ImageDraw
+from draw import draw_image
 
 
 cognito = boto3.client('cognito-idp')
@@ -28,23 +28,6 @@ def get_from_email():
     if not ses_from_email:
         ses_from_email = ssm.get_parameter(Name='/let-them-draw/from-email')['Parameter']['Value']
     return ses_from_email
-
-def draw_image(shape, color):
-    img = Image.new('RGB', (400, 400), 'white')
-    draw = ImageDraw.Draw(img)
-
-    try:
-        # https://drafts.csswg.org/css-color-4/#named-colors
-        rgb_color = ImageColor.getrgb(color)
-    except ValueError:
-        rgb_color = (0, 0, 0)
-
-    if shape.lower() == 'square':
-        draw.rectangle([100, 100, 300, 300], fill=rgb_color)
-    elif shape.lower() == 'circle':
-        draw.ellipse([100, 100, 300, 300], fill=rgb_color)
-
-    return img
 
 def parse_request_data(event):
     """Parse request data from the event."""
