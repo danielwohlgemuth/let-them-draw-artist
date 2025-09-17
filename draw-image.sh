@@ -4,4 +4,4 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     exit 1
 fi
 
-uv run python utils/test_draw_image.py --shape $1 --color $2
+uv run python utils/test_draw_image.py --shape "$1" --color "$2"
