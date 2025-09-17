@@ -39,6 +39,17 @@ def _draw_hypnotic_squares(draw, size, color):
             y_dir = random.choice(directions)
             draw_square(x, y, start_size, start_size, x_dir, y_dir, start_steps - 1, start_steps - 1)
 
+def _draw_tiled_lines(draw, size, color):
+    step = max(20, size // 25)
+    margin = step
+
+    for x in range(margin, size - margin, step):
+        for y in range(margin, size - margin, step):
+            if random.random() >= 0.5:
+                draw.line([(x, y), (x + step, y + step)], fill=color, width=2)
+            else:
+                draw.line([(x + step, y), (x, y + step)], fill=color, width=2)
+
 def draw_image(shape, color, size=512, scale_factor=4):
     """
     Draw an image with the specified shape and color, with anti-aliasing.
@@ -72,7 +83,8 @@ def draw_image(shape, color, size=512, scale_factor=4):
     shape_methods = {
         'square': _draw_square,
         'circle': _draw_circle,
-        'hypnotic squares': _draw_hypnotic_squares
+        'hypnotic squares': _draw_hypnotic_squares,
+        'tiled lines': _draw_tiled_lines,
     }
 
     draw_method = shape_methods.get(shape.lower())
