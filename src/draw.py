@@ -1,3 +1,4 @@
+import random
 from PIL import Image, ImageColor, ImageDraw
 
 
@@ -12,6 +13,31 @@ def _draw_circle(draw, size, color):
         [0, 0, size, size],
         fill=color
     )
+
+def _draw_hypnotic_squares(draw, size, color):
+    final_size = 3
+    offset = 2
+    tile_step = (size - offset * 2) / 4
+    start_size = tile_step
+    directions = [-1, 0, 1]
+
+    def draw_square(x, y, width, height, x_movement, y_movement, steps, start_steps):
+        draw.rectangle([x, y, x + width, y + height], outline=color, width=2)
+
+        if steps >= 0:
+            new_size = (start_size * (steps / start_steps)) + final_size
+            new_x = x + (width - new_size) / 2
+            new_y = y + (height - new_size) / 2
+            new_x = new_x - ((x - new_x) / (steps + 2)) * x_movement
+            new_y = new_y - ((y - new_y) / (steps + 2)) * y_movement
+            draw_square(new_x, new_y, new_size, new_size, x_movement, y_movement, steps - 1, start_steps)
+
+    for x in range(offset, size - offset, int(tile_step)):
+        for y in range(offset, size - offset, int(tile_step)):
+            start_steps = 2 + int(random.random() * 4)
+            x_dir = random.choice(directions)
+            y_dir = random.choice(directions)
+            draw_square(x, y, start_size, start_size, x_dir, y_dir, start_steps - 1, start_steps - 1)
 
 def draw_image(shape, color, size=512, scale_factor=4):
     """
@@ -45,7 +71,8 @@ def draw_image(shape, color, size=512, scale_factor=4):
 
     shape_methods = {
         'square': _draw_square,
-        'circle': _draw_circle
+        'circle': _draw_circle,
+        'hypnotic squares': _draw_hypnotic_squares
     }
 
     draw_method = shape_methods.get(shape.lower())
