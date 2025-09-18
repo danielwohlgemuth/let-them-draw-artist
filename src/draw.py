@@ -1,5 +1,6 @@
 import random
 import math
+import numpy as np
 from PIL import Image, ImageColor, ImageDraw
 
 
@@ -52,28 +53,28 @@ def _draw_tiled_lines(draw, size, color):
                 draw.line([(x + step, y), (x, y + step)], fill=color, width=2)
 
 def _draw_voronoi(draw, size, color):
-    num_points = 10 + int(random.random() * 5)
-    points = [(random.randint(0, size), random.randint(0, size)) for _ in range(num_points)]
+    num_points = 10
+    points = [(random.randint(0, size-1), random.randint(0, size-1)) for _ in range(num_points)]
     line_color = color[:3] if len(color) == 4 else color
 
-    grid = [[0] * size for _ in range(size)]
+    y_coords, x_coords = np.indices((size, size))
 
-    for y in range(size):
-        for x in range(size):
-            min_dist = float('inf')
-            for i, (px, py) in enumerate(points):
-                dist = (px - x) ** 2 + (py - y) ** 2
-                if dist < min_dist:
-                    min_dist = dist
-                    grid[y][x] = i
+    min_dist = np.full((size, size), np.inf)
+    grid = np.zeros((size, size), dtype=int)
+    for i, (px, py) in enumerate(points):
+        dist = (x_coords - px)**2 + (y_coords - py)**2
 
-    for y in range(size - 1):
-        for x in range(size - 1):
-            current = grid[y][x]
-            if grid[y][x + 1] != current:
-                draw.point((x, y), fill=line_color)
-            if grid[y + 1][x] != current:
-                draw.point((x, y), fill=line_color)
+        closer = dist < min_dist
+        grid[closer] = i
+        min_dist[closer] = dist[closer]
+
+    edges = np.zeros((size, size), dtype=bool)
+    edges[:-1, :] |= (grid[:-1, :] != grid[1:, :])
+    edges[:, :-1] |= (grid[:, :-1] != grid[:, 1:])
+
+    edge_coords = np.where(edges)
+    for y, x in zip(*edge_coords):
+        draw.point((x, y), fill=line_color)
 
     border_width = 1
     draw.rectangle(

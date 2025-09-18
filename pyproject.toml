@@ -8,6 +8,7 @@ dependencies = [
     "pillow==11.3.0",
     "boto3==1.40.25",
     "botocore==1.40.25",
+    "numpy>=2.3.3",
 ]
 
 [dependency-groups]
