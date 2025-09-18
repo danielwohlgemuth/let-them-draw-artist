@@ -30,6 +30,14 @@ class TestDrawImage:
         assert img.size == (512, 512)
         assert img.mode == 'RGB'
 
+    def test_draw_hypnotic_squares(self):
+        """Test drawing a hypnotic squares shape."""
+        img = draw_image('hypnotic squares', 'blue')
+
+        assert isinstance(img, Image.Image)
+        assert img.size == (512, 512)
+        assert img.mode == 'RGB'
+
     def test_draw_square_case_insensitive(self):
         """Test that shape parameter is case insensitive."""
         img1 = draw_image('SQUARE', 'green')
