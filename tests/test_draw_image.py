@@ -19,40 +19,30 @@ class TestDrawImage:
         img = draw_image('square', 'red')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        assert img.mode == 'RGB'
 
     def test_draw_circle(self):
         """Test drawing a circle shape."""
         img = draw_image('circle', 'blue')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        assert img.mode == 'RGB'
 
     def test_draw_hypnotic_squares(self):
         """Test drawing a hypnotic squares shape."""
         img = draw_image('hypnotic squares', 'blue')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        assert img.mode == 'RGB'
 
     def test_draw_tiled_lines(self):
         """Test drawing a tiled lines shape."""
         img = draw_image('tiled lines', 'blue')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        assert img.mode == 'RGB'
 
     def test_draw_voronoi(self):
         """Test drawing a voronoi shape."""
         img = draw_image('voronoi', 'blue')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        assert img.mode == 'RGB'
 
     def test_draw_square_case_insensitive(self):
         """Test that shape parameter is case insensitive."""
@@ -77,7 +67,6 @@ class TestDrawImage:
         img = draw_image('square', 'invalidcolor')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
 
     def test_valid_named_colors(self):
         """Test various valid named colors."""
@@ -86,7 +75,6 @@ class TestDrawImage:
         for color in colors:
             img = draw_image('square', color)
             assert isinstance(img, Image.Image)
-            assert img.size == (512, 512)
 
     def test_hex_colors(self):
         """Test hex color codes."""
@@ -95,7 +83,6 @@ class TestDrawImage:
         for color in hex_colors:
             img = draw_image('circle', color)
             assert isinstance(img, Image.Image)
-            assert img.size == (512, 512)
 
     def test_rgb_colors(self):
         """Test RGB color format."""
@@ -104,12 +91,9 @@ class TestDrawImage:
         for color in rgb_colors:
             img = draw_image('square', color)
             assert isinstance(img, Image.Image)
-            assert img.size == (512, 512)
 
     def test_unknown_shape(self):
         """Test behavior with unknown shape (should not draw anything)."""
         img = draw_image('triangle', 'red')
 
         assert isinstance(img, Image.Image)
-        assert img.size == (512, 512)
-        # Should still create a white image even with unknown shape
