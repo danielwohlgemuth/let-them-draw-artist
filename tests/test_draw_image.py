@@ -38,6 +38,14 @@ class TestDrawImage:
         assert img.size == (512, 512)
         assert img.mode == 'RGB'
 
+    def test_draw_tiled_lines(self):
+        """Test drawing a tiled lines shape."""
+        img = draw_image('tiled lines', 'blue')
+
+        assert isinstance(img, Image.Image)
+        assert img.size == (512, 512)
+        assert img.mode == 'RGB'
+
     def test_draw_square_case_insensitive(self):
         """Test that shape parameter is case insensitive."""
         img1 = draw_image('SQUARE', 'green')
