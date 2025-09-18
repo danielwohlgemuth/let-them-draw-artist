@@ -1,4 +1,5 @@
 import random
+import math
 from PIL import Image, ImageColor, ImageDraw
 
 
@@ -50,6 +51,37 @@ def _draw_tiled_lines(draw, size, color):
             else:
                 draw.line([(x + step, y), (x, y + step)], fill=color, width=2)
 
+def _draw_voronoi(draw, size, color):
+    num_points = 10 + int(random.random() * 5)
+    points = [(random.randint(0, size), random.randint(0, size)) for _ in range(num_points)]
+    line_color = color[:3] if len(color) == 4 else color
+
+    grid = [[0] * size for _ in range(size)]
+
+    for y in range(size):
+        for x in range(size):
+            min_dist = float('inf')
+            for i, (px, py) in enumerate(points):
+                dist = (px - x) ** 2 + (py - y) ** 2
+                if dist < min_dist:
+                    min_dist = dist
+                    grid[y][x] = i
+
+    for y in range(size - 1):
+        for x in range(size - 1):
+            current = grid[y][x]
+            if grid[y][x + 1] != current:
+                draw.point((x, y), fill=line_color)
+            if grid[y + 1][x] != current:
+                draw.point((x, y), fill=line_color)
+
+    border_width = 1
+    draw.rectangle(
+        [(0, 0), (size - 1, size - 1)],
+        outline=line_color,
+        width=border_width
+    )
+
 def draw_image(shape, color, size=512, scale_factor=4):
     """
     Draw an image with the specified shape and color, with anti-aliasing.
@@ -65,7 +97,6 @@ def draw_image(shape, color, size=512, scale_factor=4):
     """
     large_size = size * scale_factor
     img = Image.new('RGBA', (large_size, large_size), (255, 255, 255, 0))
-    draw = ImageDraw.Draw(img)
 
     try:
         # https://drafts.csswg.org/css-color-4/#named-colors
@@ -85,6 +116,7 @@ def draw_image(shape, color, size=512, scale_factor=4):
         'circle': _draw_circle,
         'hypnotic squares': _draw_hypnotic_squares,
         'tiled lines': _draw_tiled_lines,
+        'voronoi': _draw_voronoi,
     }
 
     draw_method = shape_methods.get(shape.lower())
